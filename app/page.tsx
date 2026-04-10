@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const [genre, setGenre] = useState("");
@@ -10,9 +11,8 @@ export default function Home() {
   const [usageCount, setUsageCount] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [isClient, setIsClient] = useState(false);   // ← Fix for hydration
+  const [isClient, setIsClient] = useState(false);
 
-  // Safe localStorage loading
   useEffect(() => {
     setIsClient(true);
     const stored = localStorage.getItem("zatunFreeUses");
@@ -61,9 +61,8 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Don't render dynamic parts until client is ready
   if (!isClient) {
-    return <div className="min-h-screen bg-[#0a0a0f]" />; // Simple loader
+    return <div className="min-h-screen bg-[#0a0a0f]" />;
   }
 
   return (
@@ -117,7 +116,7 @@ export default function Home() {
               <textarea 
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-zinc-500 focus:border-orange-500/50 focus:bg-white/10 resize-none" 
                 rows={3} 
-                placeholder="e.g. The player finds him alone in a burning library" 
+                placeholder="e.g. The player meets this character in a ruined tavern after a battle" 
                 value={scene} 
                 onChange={(e) => setScene(e.target.value)} 
               />
@@ -139,24 +138,34 @@ export default function Home() {
         </div>
 
         {output && !showPaywall && (
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8">
-            <div className="flex justify-between mb-4">
-              <span className="text-xs uppercase tracking-widest text-zinc-400">Generated Dialogue</span>
+          <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-9">
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-xs uppercase tracking-widest text-zinc-400">GENERATED DIALOGUE</span>
               <div className="flex gap-3">
-                <button onClick={handleCopy} className="text-sm px-5 py-2 border border-white/20 rounded-xl hover:bg-white/5">
+                <button 
+                  onClick={handleCopy} 
+                  className="text-sm px-5 py-2 border border-white/20 rounded-xl hover:bg-white/5 transition"
+                >
                   {copied ? "✓ Copied" : "Copy"}
                 </button>
-                <button onClick={handleGenerate} className="text-sm px-5 py-2 border border-orange-500/30 text-orange-400 rounded-xl hover:bg-orange-500/10">
+                <button 
+                  onClick={handleGenerate} 
+                  className="text-sm px-5 py-2 border border-orange-500/30 text-orange-400 rounded-xl hover:bg-orange-500/10 transition"
+                >
                   Regenerate
                 </button>
               </div>
             </div>
-            <div className="text-zinc-200 whitespace-pre-wrap leading-relaxed text-[15px]">{output}</div>
+
+            {/* Cleaner Markdown Output with better spacing */}
+            <div className="prose prose-invert prose-zinc max-w-none text-[15.2px] leading-[1.75] tracking-[-0.005em]">
+              <ReactMarkdown>{output}</ReactMarkdown>
+            </div>
           </div>
         )}
 
         {showPaywall && (
-          <div className="mt-8 rounded-3xl border border-orange-500/20 bg-white/5 backdrop-blur-xl p-10 text-center">
+          <div className="mt-10 rounded-3xl border border-orange-500/20 bg-white/5 backdrop-blur-xl p-10 text-center">
             <h2 className="text-2xl font-bold mb-3">Free generations finished</h2>
             <p className="text-zinc-400 mb-6">Get unlimited access for $9/month</p>
             <button className="w-full py-4 rounded-2xl font-bold text-white" style={{ background: "linear-gradient(90deg, #f97316, #ec4899)" }}>
