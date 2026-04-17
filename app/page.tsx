@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
+
 export default function Home() {
   const [genre, setGenre] = useState("");
   const [character, setCharacter] = useState("");
